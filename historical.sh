@@ -11,7 +11,7 @@ versions+=("2.6.149990.1216")
 versions+=("2.7.162522.0121")
 versions+=("2.8.222599.0519")
 
-for version in $versions; do
+for version in ${versions[@]}; do
     echo "Fetching zoom $version"
-    ./latest.sh $version
+    ./fetch.sh $version
 done
