@@ -1,0 +1,1 @@
+deb [trusted=yes] http://your-web-server.local/zoom-ubuntu-repo/ ./
