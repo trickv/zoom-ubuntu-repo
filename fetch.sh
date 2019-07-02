@@ -14,6 +14,13 @@ rm -rf DEBIAN $deb_name
 wget -q https://zoom.us/client/$version/$deb_name
 dpkg -e $deb_name
 version=$(cat DEBIAN/control | grep ^Version | cut -d\  -f2)
-echo "Fetched zoom version $version"
-mv $deb_name zoom_${version}_$arch.deb
+echo "Latest zoom version is $version"
+target=zoom_${version}_$arch.deb
+if [ -e $target ]; then
+    echo "$target already exists. No action."
+else
+    echo "Adding $target to repository."
+    mv $deb_name $target
+    ./build-repo.sh
+fi
 rm -rf DEBIAN $deb_name
