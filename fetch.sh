@@ -8,7 +8,8 @@ fi
 set -u
 set -e
 
-arch=amd64
+arch=$(dpkg --print-architecture)
+echo "arch: ${arch}"
 deb_name=zoom_$arch.deb
 rm -rf DEBIAN $deb_name
 wget -q https://zoom.us/client/$version/$deb_name
