@@ -32,7 +32,7 @@ wget --quiet --output-document=- "https://zoom.us/client/${version}/${deb_name}"
 downloadpid=$!
 
 # Snuffle through downloading file to extract version:
-v="$(dpkg --field <(tail --retry --follow --pid=${downloadpid} --bytes=+0 "${deb_name}") Version)"
+v="$(dpkg --field <(tail --retry --follow --pid=${downloadpid} --bytes=+0 "${deb_name}" 2>/dev/null) Version)"
 echo "info: downloading zoom package has version ${v}"
 
 target="zoom_${v}_${arch}.deb"
