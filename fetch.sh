@@ -40,11 +40,11 @@ target="zoom_${v}_${arch}.deb"
 if [ -e "${target}" ]; then
     echo "info: aborting download, ${target} already exists."
     kill ${downloadpid}
-    wait -f ${downloadpid}
+    wait -f ${downloadpid} || true
     rm -f "${deb_name}"
 else
     echo "info: waiting for download to complete."
-    wait -f ${downloadpid}
+    wait -f ${downloadpid} || true
     echo "info: moving into place."
     mv "${deb_name}" "${target}"
     # rebuild repo if dpkg-scanpackages is available
