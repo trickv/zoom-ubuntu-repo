@@ -27,7 +27,7 @@ rm -f "${deb_name}"
 # extract the version. And then decide what to do.
 
 # Background this process:
-wget --quiet --output-document=- "https://zoom.us/client/${version}/${deb_name}" > "${deb_name}" &
+curl --fail --silent --show-error --location "https://zoom.us/client/${version}/${deb_name}" > "${deb_name}" &
 
 downloadpid=$!
 
