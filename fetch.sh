@@ -10,7 +10,7 @@ elif [ $# = 1 -a -n "$1" ]; then
     version="$1"
 else
     echo "Usage: $0 [version]"
-    echo "usage error: incorrect number or arguments or empty argument"
+    echo "usage error: incorrect number of arguments or empty argument"
     exit 1
 fi
 
