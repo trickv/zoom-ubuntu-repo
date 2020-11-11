@@ -52,4 +52,12 @@ else
 	echo "info: rebuilding repo."
 	./build-repo.sh
     fi
+    # install downloaded package if appropriate
+    v0="$(apt-cache policy zoom | egrep '  Installed: ' | cut --delimiter=: --field=2)"
+    if dpkg --compare-versions "${v0}" lt "${v}"; then
+	read -p "install zoom ${v} over ${v0} [Y]? " a
+	if [ -z "${a}" ] ; then
+	    sudo dpkg --install "${target}"
+	fi
+    fi
 fi
