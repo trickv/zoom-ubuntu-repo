@@ -39,12 +39,12 @@ target="zoom_${v}_${arch}.deb"
 
 if [ -e "${target}" ]; then
     echo "info: aborting download, ${target} already exists."
-    kill $!
-    wait -f
+    kill ${downloadpid}
+    wait -f ${downloadpid}
     rm -f "${deb_name}"
 else
     echo "info: waiting for download to complete."
-    wait -f
+    wait -f ${downloadpid}
     echo "info: moving into place."
     mv "${deb_name}" "${target}"
     echo "info: rebuilding repo."
