@@ -15,7 +15,7 @@ else
 fi
 
 arch="$(dpkg --print-architecture)"
-echo "arch: ${arch}"
+echo "info: architecture ${arch}"
 deb_name="zoom_${arch}.deb"
 rm -f "${deb_name}"
 
@@ -45,6 +45,9 @@ if [ -e "${target}" ]; then
 else
     echo "info: waiting for download to complete."
     wait -f ${downloadpid} || true
+    # This would be a good place to check the integrity of ${deb_name}
+    # because an error in the downloading process, like a network fault,
+    # could result in a truncated or corrupt file.
     echo "info: moving into place."
     mv "${deb_name}" "${target}"
     # rebuild repo if dpkg-scanpackages is available
