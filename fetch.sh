@@ -47,6 +47,9 @@ else
     wait -f ${downloadpid}
     echo "info: moving into place."
     mv "${deb_name}" "${target}"
-    echo "info: rebuilding repo."
-    ./build-repo.sh
+    # rebuild repo if dpkg-scanpackages is available
+    if type dpkg-scanpackages >/dev/null 2>&1  ; then
+	echo "info: rebuilding repo."
+	./build-repo.sh
+    fi
 fi
