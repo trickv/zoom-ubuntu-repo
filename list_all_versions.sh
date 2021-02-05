@@ -7,5 +7,6 @@ wget -q -O "$TMP" "$ZOOM_LINUX_URL"
 
 cat "$TMP"  | grep -oP '(?<=<strong>)[0-9\.]*(?=<br /></strong>)'
 cat "$TMP"  | grep -oP '(?<=<strong>)[0-9\.]*(?=</strong>)'
+cat "$TMP"  | grep -oP '[0-9]+\.[0-9]+\.+[0-9]+\ \([0-9]+\.[0-9]+\)' | sed -e s+'\.[0-9]* ('+'.'+ -e s+')'+''+
 
 rm "$TMP"

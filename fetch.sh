@@ -11,7 +11,7 @@ set -e
 arch=amd64
 deb_name=zoom_$arch.deb
 rm -rf DEBIAN $deb_name
-wget -q https://zoom.us/client/$version/$deb_name
+wget -q https://cdn.zoom.us/prod/$version/$deb_name
 dpkg -e $deb_name
 version=$(cat DEBIAN/control | grep ^Version | cut -d\  -f2)
 echo "Latest zoom version is $version"
