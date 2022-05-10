@@ -3,24 +3,18 @@ Scripts to build a Debian/Ubuntu compatible repository from Zoom's published .de
 
 This is hardcoded for zoom amd64 builds but can easily be modified for i386 if you want it.
 
-# Scripts
-* historical.sh will fetch a list of old versions of zoom builds and stick them in the current directory
-* fetch.sh will fetch a single version, or whatever the latest version is from zoom.us even if it's a new release
-* build-repo.sh builds a simple repository using dpkg-scanpackages
+# Simple usage
 
-# How to use
-* Clone this
-* Run ./historical.sh
-* Run ./fetch.sh if there's a newer version upstream
-* Run ./build-repo.sh
-* Put these files on a web server somewhere
-* Adapt zoom-repo-example.list to point to your server
-* apt-get update && apt-get install zoom
-  * and apt-get upgrade in the future will pull in updates
+Adapt the paths in zoom-update.cron for your needs and add it to your cron jobs:
 
-# Update:
+```
+linux # cp zoom-update.cron /usr/local/bin/zoom-update.cron
+linux # echo '0 * * * * nobody /usr/local/bin/zoom-update.cron' > /etc/cron.d/zoom-update
+```
 
-As parsing the homepage gets harder and harder, here's what I got as a workaround from Zoom:
+# Background
+
+Parsing the Zoom homepage got harder and harder, but here's what I got as a workaround from Zoom:
 (mind the URL containing the current version number):
 
 ```
