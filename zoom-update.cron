@@ -1,0 +1,27 @@
+#!/bin/bash
+
+ZOOM_CACHE=/var/lib/zoom
+ZOOM_REPO=${ZOOM_CACHE}/repo
+ZOOM_CLIENT_URL=https://zoom.us/client/latest/zoom_amd64.deb
+VERSION_FILE=${ZOOM_CACHE}/zoom_deb.version
+
+function get_latest_zoom()
+{
+	wget --spider "${ZOOM_CLIENT_URL}" 2>&1 | grep ^Location: | sed -e 's/.*prod\/\(.*\)\/.*/\1/'
+}
+
+if [ -f "$VERSION_FILE" ]; then
+	OLD_ZOOM_VER=$(tail -n 1 "$VERSION_FILE")
+else
+	OLD_ZOOM_VER="0.0"
+fi
+LATEST_ZOOM_VER=$(get_latest_zoom)
+
+
+if [ ! -f "$VERSION_FILE" ] || ! grep -q "^$LATEST_ZOOM_VER\$" "$VERSION_FILE" || [ "x$LATEST_ZOOM_VER" == "x" ]; then
+	echo "New version found: $LATEST_ZOOM_VER"
+	echo "$LATEST_ZOOM_VER" >> "$VERSION_FILE"
+	wget --quiet -O "${ZOOM_REPO}/zoom_amd64_${LATEST_ZOOM_VER}.deb" "${ZOOM_CLIENT_URL}"
+	dpkg-scanpackages --multiversion ${ZOOM_REPO}/ /dev/null > ${ZOOM_REPO}/Release
+        dpkg-scanpackages --multiversion ${ZOOM_REPO} |  gzip -9c > ${ZOOM_REPO}/Packages.gz
+fi
