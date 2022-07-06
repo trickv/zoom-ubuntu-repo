@@ -40,3 +40,24 @@ So in order to get the latest version number, do this:
 linux # wget --spider https://zoom.us/client/latest/zoom_amd64.deb 2>&1 | grep ^Location: | sed -e 's/.*prod\/\(.*\)\/.*/\1/'
 5.9.3.1911
 ```
+
+# Alternative: zoom-up
+The script `zoom-up` can be invoked at any time; it will check the
+current and available versions of zoom, and upgrade if a newer version
+is available. Measures are taken to avoid downloading the entire
+package file by checking the version during the initial stages of
+download and cancelling the download if the version is not
+appropriate. It could be installed as a daily cron job.
+```
+$ ./zoom-up
+info: architecture amd64
+info: current zoom version 5.11.0.3540
+info: available zoom version 5.11.1.3595
+info: waiting for download to complete
+...
+The following packages will be upgraded:
+  zoom
+...
+Setting up zoom (5.11.1.3595) ...
+...
+```
