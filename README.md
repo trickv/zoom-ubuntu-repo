@@ -61,3 +61,13 @@ The following packages will be upgraded:
 Setting up zoom (5.11.1.3595) ...
 ...
 ```
+But try it when the system is up to date and it aborts in a faction of a second.
+```
+$ time ./zoom-up
+info: architecture amd64
+info: current zoom version 5.11.1.3595
+info: available zoom version 5.11.1.3595
+info: aborting download
+
+real	0m0.394s
+```
