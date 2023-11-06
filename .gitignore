@@ -1,1 +1,2 @@
-*.deb
+/*.deb
+/Packages.gz

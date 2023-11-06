@@ -1,0 +1,62 @@
+#!/usr/bin/bash
+
+# Check available version and upgrade zoom if possible.
+
+set -f
+set -u
+set -e
+
+if [ $# != 0 ]; then
+    echo "Download and install zoom package. Abort if it does not supersede currently installed version."
+    echo "Usage: $0"
+    exit 1
+fi
+
+arch="$(dpkg --print-architecture)"
+echo "info: architecture ${arch}"
+deb_name=$(mktemp --tmpdir "zoom_${arch}_XXXXXX.deb")
+
+# Allow other users, including _apt, to read the file, to avoid a warning:
+#  N: Download is performed unsandboxed as root as file '/tmp/zoom_amd64_XXXXXX.deb' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)
+chmod a+r "${deb_name}" || true
+
+# Here we download the file, but as it downloads we examine its header
+# to grovel out the version, and if we already have that version the
+# download is terminated early. The trick is to put the downloading
+# process in the background, and then trickle the file being
+# downloaded into a scanning process until enough has been seen to
+# extract the version. And then decide what to do.
+
+# Background this process:
+curl --fail --silent --show-error --location "https://zoom.us/client/latest/zoom_${arch}.deb" >> "${deb_name}" &
+
+downloadpid=$!
+
+# Figure out currently installed version
+v0="$(apt-cache policy zoom | egrep '  Installed: ' | cut --delimiter=: --field=2 | tr -d ' ')"
+if [ -n "${v0}" ]; then
+    echo "info: current zoom version ${v0}"
+else
+    echo "info: zoom not currently installed"
+fi
+
+# Snuffle through downloading file to extract version:
+v="$(dpkg --field <(tail --retry --follow --pid=${downloadpid} --bytes=+0 "${deb_name}" 2>/dev/null) Version)"
+echo "info: available zoom version ${v}"
+
+# install downloaded or existing package if appropriate
+if dpkg --compare-versions "${v0}" lt "${v}"; then
+    echo "info: waiting for download to complete"
+    wait -f ${downloadpid} || true
+    # This would be a good place to check the integrity of ${deb_name}
+    # because an error in the downloading process, like a network fault,
+    # could result in a truncated or corrupt file.
+    sudo apt install "${deb_name}"
+else
+    echo -n "info: aborting download ..."
+    kill ${downloadpid}
+    wait -f ${downloadpid} || true
+    echo " aborted after $(wc -c < "${deb_name}") bytes"
+fi
+
+rm -f "${deb_name}"
