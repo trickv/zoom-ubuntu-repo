@@ -53,9 +53,10 @@ if dpkg --compare-versions "${v0}" lt "${v}"; then
     # could result in a truncated or corrupt file.
     sudo apt install "${deb_name}"
 else
-    echo "info: aborting download"
+    echo -n "info: aborting download ..."
     kill ${downloadpid}
     wait -f ${downloadpid} || true
+    echo " aborted after $(wc -c < "${deb_name}") bytes"
 fi
 
 rm -f "${deb_name}"
